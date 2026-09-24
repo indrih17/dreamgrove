@@ -4,8 +4,8 @@ actions.precombat=snapshot_stats
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat+=/bear_form,if=buff.bear_form.down&!talent.heart_of_the_wild.enabled
 actions.precombat+=/cat_form,if=buff.bear_form.down&talent.heart_of_the_wild.enabled
-actions.precombat+=/variable,name=algethar_puzzle_box_precombat_cast,value=3,if=equipped.algethar_puzzle_box
-actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_cooldown&trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|!trinket.2.has_cooldown
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_cooldown&trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|!trinket.1.has_cooldown
 
 # Executed every time the actor is available.
 actions=retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute
@@ -51,8 +51,9 @@ actions.feline_potential+=/mangle,if=((buff.bs_inc.up&buff.feline_potential_coun
 actions.feline_potential+=/shred,if=(buff.feline_potential_counter.stack=6&!buff.cat_form.up&!dot.rake.refreshable&talent.fluid_form.enabled)
 actions.feline_potential+=/rake,if=(buff.feline_potential_counter.stack=6&!buff.cat_form.up&talent.fluid_form.enabled)
 
-actions.cooldowns=use_items
-actions.cooldowns+=/potion,if=buff.lunar_beam.up
+actions.cooldowns=potion,if=buff.lunar_beam.up
+actions.cooldowns+=/use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.bs_inc.up|(!talent.ursocs_guidance.enabled&!cooldown.bs_inc.up))|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|(!buff.bs_inc.up&!cooldown.bs_inc.ready)))|!variable.trinket_sync_slot)
+actions.cooldowns+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.bs_inc.up|(!talent.ursocs_guidance.enabled&!cooldown.bs_inc.up))|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|(!buff.bs_inc.up&!cooldown.bs_inc.ready)))|!variable.trinket_sync_slot)
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
